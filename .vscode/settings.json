@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": ".venv/bin/python3.5",
+    "python.unitTest.pyTestArgs": [
+        "test"
+    ],
+    "python.unitTest.unittestEnabled": false,
+    "python.unitTest.nosetestsEnabled": false,
+    "python.unitTest.pyTestEnabled": true
+}
