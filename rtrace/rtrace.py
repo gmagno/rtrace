@@ -50,8 +50,23 @@ def point_in_polygon(ri, poly_verts, pn):
     '''
     throw_away = np.argmax(np.abs(pn))
     poly_verts -= ri
-    poly_verts[:, throw_away] = np.zeros(poly_verts.shape[0])
-    pass
+    # TODO: avoid the delete to speed up a bit
+    poly_verts_uv = np.delete(poly_verts, throw_away, 1)
+    ri_uv = np.delete(ri, throw_away, 0)
+    nverts = poly_verts_uv.shape[0]  # number of vertices
+    nc = 0  # number of crossings
+    for a, v in enumerate(poly_verts_uv):
+        nv = poly_verts_uv[(a+1) % nverts]  # nv: next vert, v: current vert)
+        sh = -1 if v[1] < 0 else 1
+        nsh = -1 if nv[1] < 0 else 1
+        if sh != nsh:
+            if v[0] > 0 and nv[0] > 0:
+                nc += 1
+            elif v[0] > 0 or nv[0] > 0:
+                if v[0] - v[1] * (nv[0] - v[0]) / (nv[1] - v[1]) >  0:
+                    nc += 1
+    return nc % 2  # no need to cast, in python3 True is 1, False is 0
+
 
 def ray_x_polygon(r0, rd, pp, pn, poly_verts, tol=1e-6):
     '''
@@ -70,13 +85,22 @@ def ray_x_sphere():
     pass
 
 def main():
-    ri = np.array([0.5, 0.0, 0.5])
+    ri = np.array([0.5, 5.0, 0.9])
+    # poly_verts = np.array([
+    #     [ 0.0, 5.0, 0.0 ],
+    #     [ 1.0, 5.0, 0.0 ],
+    #     [ 1.0, 5.0, 1.0 ],
+    #     [ 0.0, 5.0, 1.0 ],
+    # ])
     poly_verts = np.array([
         [ 0.0, 5.0, 0.0 ],
+        [ 0.5, 5.0, 0.5 ],
         [ 1.0, 5.0, 0.0 ],
-        [ 1.0, 5.0, 1.0 ],
-        [ 0.0, 5.0, 1.0 ],
+        [ 0.5, 5.0, 1.0 ],
+        # [ 1.0, 5.0, 1.0 ],
+        # [ 0.0, 5.0, 1.0 ],
     ])
+
     pn = np.array([0.0, 1.0, 0.0])
     point_in_polygon(ri, poly_verts, pn)
 
