@@ -76,14 +76,45 @@ def test_ray_x_poly(request, p):
 @pytest.mark.parametrize('p', [
     {
         'r0': np.array([ 0.0, 0.0, 0.0 ]),
-        'rd': np.array([ 1.0, 2.0, 0.0 ]) / np.linalg.norm([1.0, 2.0, 0.0]),
+        'rd': np.array([ 1.0, 2.0, 0.0 ]) / np.linalg.norm([ 1.0, 2.0, 0.0 ]),
         'sc': np.array([ 2.0, 2.0, 0.0 ]),
         'sr': 1.0,
         'expected': (np.array([1.0, 2.0, 0.0]), True)
     },
+    {
+        'r0': np.array([ 2.0, 0.0, 0.0 ]),
+        'rd': np.array([ 0.0, 1.0, 0.0 ]),
+        'sc': np.array([ 2.0, 2.0, 0.0 ]),
+        'sr': 1.0,
+        'expected': (np.array([2.0, 1.0, 0.0]), True)
+    },
+    {
+        'r0': np.array([ 4.0, 0.0, 0.0 ]),
+        'rd': np.array([-1.0, 1.0, 0.0 ]) / np.linalg.norm([-1.0, 1.0, 0.0]),
+        'sc': np.array([ 2.0, 2.0, 0.0 ]),
+        'sr': 1.0,
+        'expected': (
+            np.array([2.0 + np.cos(np.pi/4.), 2.0 - np.cos(np.pi/4.), 0.0]),
+            True
+        )
+    },
+    {
+        'r0': np.array([ 4.0, 0.0, 0.0 ]),
+        'rd': np.array([ 0.0, 1.0, 0.0 ]),
+        'sc': np.array([ 2.0, 2.0, 0.0 ]),
+        'sr': 1.0,
+        'expected': (np.inf, False)
+    },
+    {
+        'r0': np.array([ 1.0, -2.0, -1.0 ]),
+        'rd': np.array([ 1.0,  2.0,  4.0 ]) / np.linalg.norm([ 1.0, 2.0, 4.0 ]),
+        'sc': np.array([ 3.0,  0.0,  5.0 ]),
+        'sr': 3.0,
+        'expected': (np.array([1.81689369, -0.36621263, 2.26757475]), True)
+    }
 ])
 def test_ray_x_sphere(request, p):
-    ri, hit_sphere = ray_x_sphere(p['r0'], p['rd'], p['sc'], p['sr'], tol=1e-6)
+    ri, hit_sphere = ray_x_sphere(p['r0'], p['rd'], p['sc'], p['sr'])
     assert np.allclose(ri, p['expected'][0])
     assert hit_sphere == p['expected'][1]
 

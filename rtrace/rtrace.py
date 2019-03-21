@@ -87,7 +87,7 @@ def ray_x_polygon(r0, rd, poly_verts, pn, tol=1e-6):
     is_inside = point_in_polygon(ri, poly_verts, pn)
     return ri, is_inside
 
-def ray_x_sphere(r0, rd, sc, sr, tol=1e-6):
+def ray_x_sphere(r0, rd, sc, sr):
     '''
     Parameters
     ----------
@@ -103,14 +103,13 @@ def ray_x_sphere(r0, rd, sc, sr, tol=1e-6):
     if l2oc >= sr * sr:  # check if ray originates outside the sphere
         # determine the closest approach along the ray to the sphere's center
         tca = np.dot(oc, rd)
-        if tca >= -tol:
+        if tca >= 0:
             t2hc = sr*sr - l2oc + tca*tca
             if t2hc > 0:
                 t = tca - np.sqrt(t2hc)
                 ri = r0 + rd*t  # the intersection point
                 return ri, True
     return ri, False
-
 
 def main():
     pass
