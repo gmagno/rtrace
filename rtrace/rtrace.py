@@ -68,41 +68,52 @@ def point_in_polygon(ri, poly_verts, pn):
     return nc % 2  # no need to cast, in python3 True is 1, False is 0
 
 
-def ray_x_polygon(r0, rd, pp, pn, poly_verts, tol=1e-6):
+def ray_x_polygon(r0, rd, poly_verts, pn, tol=1e-6):
     '''
 
     Parameters
     ----------
-    r0, rd, pp, pn, tol: check function `ray_x_plane()` parameters.
+    r0, rd, pn, tol: check function `ray_x_plane()` parameters.
     poly_verts: check function `point_in_polygon()` parameters.
+
+    Returns
+    -------
+    A 2-tuple where the first element represents the coordinates of the
+        intersection point, and the second one a boolean set to True if the ray
+        intersects the polygon
     '''
-    t = ray_x_plane(r0, rd, pp, pn, tol)
+    t = ray_x_plane(r0, rd, poly_verts[0], pn, tol)
     ri = r0 + rd*t  # intersection point
     is_inside = point_in_polygon(ri, poly_verts, pn)
     return ri, is_inside
 
-def ray_x_sphere():
-    pass
+def ray_x_sphere(r0, rd, sc, sr, tol=1e-6):
+    '''
+    Parameters
+    ----------
+    r0: a numpy.ndarray with shape (3,) representing the ray origin position
+    rd: a numpy.ndarray with shape (3,) representing the ray direction vector
+    sc: a numpy.ndarray with shape (3,) representing the sphere center
+        coordinates
+    sr: a float representing the sphere radius
+    '''
+    ri = np.inf
+    oc = sc - r0
+    l2oc = np.dot(oc, oc)  # ray to the sphere center squared distance
+    if l2oc >= sr * sr:  # check if ray originates outside the sphere
+        # determine the closest approach along the ray to the sphere's center
+        tca = np.dot(oc, rd)
+        if tca >= -tol:
+            t2hc = sr*sr - l2oc + tca*tca
+            if t2hc > 0:
+                t = tca - np.sqrt(t2hc)
+                ri = r0 + rd*t  # the intersection point
+                return ri, True
+    return ri, False
+
 
 def main():
-    ri = np.array([0.5, 5.0, 0.9])
-    # poly_verts = np.array([
-    #     [ 0.0, 5.0, 0.0 ],
-    #     [ 1.0, 5.0, 0.0 ],
-    #     [ 1.0, 5.0, 1.0 ],
-    #     [ 0.0, 5.0, 1.0 ],
-    # ])
-    poly_verts = np.array([
-        [ 0.0, 5.0, 0.0 ],
-        [ 0.5, 5.0, 0.5 ],
-        [ 1.0, 5.0, 0.0 ],
-        [ 0.5, 5.0, 1.0 ],
-        # [ 1.0, 5.0, 1.0 ],
-        # [ 0.0, 5.0, 1.0 ],
-    ])
-
-    pn = np.array([0.0, 1.0, 0.0])
-    point_in_polygon(ri, poly_verts, pn)
+    pass
 
 if __name__ == '__main__':
     main()
