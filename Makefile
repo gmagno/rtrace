@@ -8,8 +8,19 @@ clean:
 		-o -name "*.pyc" \
 		-o -name .pytest_cache \
 		-o -name .eggs \
+		-o -name rtrace.egg-info \
+		-o -name dist \
 		\) -exec rm -rf {} +\
 
+
+build: clean
+	python setup.py sdist
+
+upload-dev:
+	twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+upload: build
+	twine upload dist/*
 
 # -- Development ----------------------#
 
