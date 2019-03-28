@@ -95,9 +95,8 @@ def ray_x_sphere(r0, rd, sc, sr):
     rd: a numpy.ndarray with shape (3,) representing the ray direction vector
     sc: a numpy.ndarray with shape (3,) representing the sphere center
         coordinates
-    sr: a float representing the sphere radius
+    sr: a scalar representing the sphere radius
     '''
-    ri = np.inf
     oc = sc - r0
     l2oc = np.dot(oc, oc)  # ray to the sphere center squared distance
     if l2oc >= sr * sr:  # check if ray originates outside the sphere
@@ -109,11 +108,5 @@ def ray_x_sphere(r0, rd, sc, sr):
                 t = tca - np.sqrt(t2hc)
                 ri = r0 + rd*t  # the intersection point
                 return ri, True
-    return ri, False
-
-def main():
-    pass
-
-if __name__ == '__main__':
-    main()
+    return np.inf, False
 
