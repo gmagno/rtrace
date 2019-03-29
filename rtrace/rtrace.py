@@ -49,9 +49,9 @@ def point_in_polygon(ri, poly_verts, pn):
     True if `ri` is inside the polygon.
     '''
     throw_away = np.argmax(np.abs(pn))
-    poly_verts -= ri
+    poly_verts_uv = poly_verts - ri
     # TODO: avoid the delete to speed up a bit
-    poly_verts_uv = np.delete(poly_verts, throw_away, 1)
+    poly_verts_uv = np.delete(poly_verts_uv, throw_away, 1)
     ri_uv = np.delete(ri, throw_away, 0)
     nverts = poly_verts_uv.shape[0]  # number of vertices
     nc = 0  # number of crossings
